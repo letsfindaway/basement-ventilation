@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Qt Creator user files
+*.user
+
+# Other stuff
+/secret
