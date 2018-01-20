@@ -14,6 +14,8 @@ The rest is some software.
 
 I'm trying to give you enough information to build this project for your house. You might modify it to cope with more or less rooms or add your own features.
 
+If you have any questions, ideas, improvements or find an error, don't hesitate to create an [issue](/issues). I don't promise to answer, but I will try!
+
 ## Features
 
 Just opening and closing the windows was not enough for me. The more you think about it, the more features come on the list. Currently the project includes:

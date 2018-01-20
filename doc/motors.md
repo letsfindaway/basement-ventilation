@@ -16,7 +16,7 @@ The actuators have mechanical limit switches which can be adjusted. I just set t
 
 The actuator is equipped with a DC motor and the direction can be changed by switching the polarity of the voltage. To operate two windows I designed the following relay circuit using four relays to operate two motors.
 
-[Schematic of the relays](relay-schematic.png)
+![Schematic of the relays](relay-schematic.png)
 
 K1 and K2 are used to switch the polarity of the voltage. When K1 is on and K2 is off, the lower terminal of the motor will get +36V and the upper terminal will be connected to ground. Vice versa, when K1 is off and K2 is on, the polarity is reversed.
 
