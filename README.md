@@ -4,7 +4,7 @@ You know this situation: the air in the basement rooms is always too wet. The mo
 
 It only makes sense to open the windows when the air outside is drier than inside. If it is the other way around then you should better keep them shut. You can do that manually, of course. But especially in summer the right time is in very early hours, and who wants to get up at 3:00 just to open the window in the basement?
 
-This Arduino project does this automatically for two rooms in my house. its basic setup is a simple 1-2-3:
+This Arduino project does this automatically for two rooms in my house. Its basic setup is a simple 1-2-3:
 
 * 1 Adafruit Feather board and a touch display
 * 2 linear motors to operate the windows
@@ -19,7 +19,7 @@ I'm trying to give you enough information to build this project for your house. 
 Just opening and closing the windows was not enough for me. The more you think about it, the more features come on the list. Currently the project includes:
 
 * Reading the sensors and computing the absolute humidity inside and outside
-* Controlling the window position exactly: not fully open and fully closed is possible, but every position in between
+* Controlling the window position exactly: not only fully open and fully closed is possible, but every position in between
 * Making the decision when to open or close a window
 * Displaying all measurement values and the decisions made on a nice screen
 * Manually operating the windows from the touch display
@@ -43,7 +43,7 @@ For that project I used the following parts:
 * [36V power supply for actuators](https://www.voelkner.de/products/902705/Mean-Well-AC-DC-Netzteilbaustein-geschlossen-LRS-75-36-36-V-DC-2.1-A-75.6-W.html)
 * a simple USB power supply for the Adafruit parts
 * some electronic parts (resistors, capacitors) mentioned in the text
-* cable, housing, etc as you ned and like
+* cable, housing, etc as you need and like
 
 It finally cost me about 200 € and gave me a lot of fun -- and dry air in the basement rooms!
 
