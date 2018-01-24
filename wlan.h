@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) letsfindaway. All rights reserved.
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #ifndef WLAN_H
 #define WLAN_H
 
@@ -34,6 +39,7 @@ private:
 
   String req;
   bool currentLineIsBlank;
+  time_t reqtime;
   int tag;
   File daten;
 };

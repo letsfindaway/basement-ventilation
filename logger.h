@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) letsfindaway. All rights reserved.
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #ifndef LOGGER_H
 #define LOGGER_H
 

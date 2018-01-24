@@ -208,6 +208,7 @@ void Anzeige::screen(Screen scr, Ort ort) {
   }
 
   current = scr;
+  delay(10);
 }
 
 void Anzeige::printKlima(Ort ort, Klima& klima) {
@@ -226,6 +227,7 @@ void Anzeige::printKlima(Ort ort, Klima& klima) {
   tft.fillRect(360, 28+120*ort, 60, 21, 0xbdd7);
   tft.setCursor(360, 48+120*ort);
   tft.print(klima.abshum, 1); 
+  delay(10);
 }
 
 void Anzeige::printModus(Ort ort, Modus modus)
@@ -251,6 +253,8 @@ void Anzeige::printModus(Ort ort, Modus modus)
   } else {
     tft.fillRect(75-16, 95-16+120*ort, 32, 32, 0xbdd7);
   }
+
+  delay(10);
 }
 
 
@@ -278,6 +282,7 @@ void Anzeige::printFenster(Ort ort, int pos)
   tft.fillRect(270, 83+120*ort, 40, 21, 0xbdd7);
   tft.setCursor(270+off, 103+120*ort);
   tft.print(pos);
+  delay(10);
 }
 
 static bool within(int x, int y, const Hotspot& h) {
@@ -317,6 +322,8 @@ void Anzeige::printCfg(float mind, float maxd, float mint, float win)
     tft.print((int)win);
     tft.print("%");
   }
+
+  delay(10);
 }
 
 Anzeige::Event Anzeige::getEvent()
@@ -426,12 +433,13 @@ void Anzeige::log(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
   filename[4] = '/';
 
   if ((logfile = SD.open(filename, FILE_WRITE | O_APPEND)) == 0) {
-    Log.print(F("Kann Datei nicht oeffnen"));
+    Log.println(F("Kann Datei nicht oeffnen"));
     return;
   }
 
   logfile.println(zeile);
   logfile.close();
+  delay(10);
 }
 
 
@@ -442,7 +450,7 @@ void Anzeige::log(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
 // size takes more of the Arduino's precious RAM but
 // makes loading a little faster.  20 pixels seems a
 // good balance.
-#define BUFFPIXEL 80
+#define BUFFPIXEL 20
 
 void Anzeige::bmpDraw(const char *filename, uint8_t x, uint16_t y) {
 
@@ -551,6 +559,7 @@ void Anzeige::bmpDraw(const char *filename, uint8_t x, uint16_t y) {
   }
 
   bmpFile.close();
+  delay(10);
   if(!goodBmp) Serial.println(F("BMP format not recognized."));
 }
 

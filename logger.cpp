@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) letsfindaway. All rights reserved.
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #include "logger.h"
 #include <Arduino.h>
 
@@ -21,12 +26,15 @@ size_t Logger::write(uint8_t c)
 
   if (c == '\n') {
     // Zeilenende, ausgeben!
-    Serial.print(line);
+    if (Serial) {
+      Serial.print(line);
+    }
 
     if (line.length() > 2) {
       udp.beginPacket(addr, 4242);
       udp.write(line.c_str(), line.length() - 2);
       udp.endPacket();
+      delay(10);
     }
 
     // Zeile zuruecksetzen
@@ -44,12 +52,15 @@ size_t Logger::write(const uint8_t *buffer, size_t size)
 
   if (line[len - 1] == '\n') {
     // Zeilenende, ausgeben!
-    Serial.print(line);
+    if (Serial) {
+      Serial.print(line);
+    }
 
     if (len > 2) {
       udp.beginPacket(addr, 4242);
       udp.write(line.c_str(), len - 2);
       udp.endPacket();
+      delay(10);
     }
 
     // Zeile zuruecksetzen

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) letsfindaway. All rights reserved.
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #include "wlan.h"
 #include "logger.h"
 
@@ -27,6 +32,7 @@ Wlan::Wlan()
 
 bool Wlan::connect()
 {
+  delay(10);
   WiFi.setPins(8,7,4,2);
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not present");
@@ -54,6 +60,7 @@ bool Wlan::connect()
   Udp.begin(localPort);
   Serial.println("Starte Server");
   server.begin();
+  delay(10);
   return ok;
 }
 
@@ -63,6 +70,7 @@ time_t Wlan::getNtpTime()
   if (lastRequest == 0 || millis() - lastRequest > 15 * 60000) {
     lastRequest = millis();
     sendNTPpacket(timeServer);
+    delay(10);
   }
 
   int size = Udp.parsePacket();
@@ -77,6 +85,7 @@ time_t Wlan::getNtpTime()
     secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
     secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
     secsSince1900 |= (unsigned long)packetBuffer[43];
+    delay(10);
     return secsSince1900 - 2208988800UL;
   }
 
@@ -95,13 +104,13 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
       if (client.connected()) {
         Log.println("connected");
       }
-      // Anfrage ist reingekommen! Wir lesen die GET Zeile der Form GET /yyyymm[dd][.csv] blabla
+      // Anfrage ist reingekommen! Wir lesen die GET Zeile der Form GET /[yyyymm[dd][.csv]] blabla
       char buf[10];
       size_t bytes = client.readBytesUntil('/', buf, 10);
 
       if (bytes == 10) {
         client.stop();
-        return;
+        break;
       }
 
       req = client.readStringUntil(' ');
@@ -109,6 +118,7 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
       Log.println(req);
       currentLineIsBlank = false;
       phase = SKIP_HEADER;
+      reqtime = millis();
     }
 
     break;
@@ -123,9 +133,12 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
           break;
         } else if (req.length() < 6) {
           Log.println("Dateiname zu kurz");
+          client.println("HTTP/1.1 404 Not Found");
+          client.println();
+          delay(1);
           client.stop();
           phase = IDLE;
-          return;
+          break;
         }
 
         // analysiere den req String
@@ -159,6 +172,15 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
         // you've gotten a character on the current line
         currentLineIsBlank = false;
       }
+    }
+
+    if (millis() - reqtime > 250) {
+      Log.println("Request Timeout ohne Leerzeile");
+      client.println("HTTP/1.1 500 Internal Server Error");
+      client.println();
+      delay(1);
+      client.stop();
+      phase = IDLE;
     }
 
     break;
@@ -197,11 +219,12 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
   case RESPONDSVG:
     // schreibe 200 Antwort
     client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: application/xhtml+xml");
+    client.println("Content-Type: text/html");
     client.println("Connection: close");  // the connection will be closed after completion of the response
     client.println();
+    // send SVG payload
     sendSVG(k1, k2, k3, r1, r2);
-    delay(1);
+    delay(50);
     client.stop();
     phase = IDLE;
     break;
@@ -245,12 +268,16 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
         break;
       }
 
+      delay(1);
       client.write(line.c_str(), line.length());
       client.write('\n');
+      delay(1);
     }
 
     break;
   }
+
+  delay(10);
 }
 
 
@@ -286,6 +313,7 @@ void Wlan::sendNTPpacket(IPAddress& address)
   Log.print("Sende NTP Paket ");
   Log.println(Udp.endPacket());
   //Serial.println("6");
+  delay(10);
 }
 
 
@@ -295,8 +323,6 @@ void Wlan::sendSVG(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
 <!DOCTYPE html>
 <html>
 <body>
-
-<h1>My first SVG</h1>
 
 <svg width="480" height="320" style="font-family:Arial;font-size:24px;font-weight:bold"  transform="scale(1)">
    <rect x="10" y="10" width="460" height="110" style="fill:rgb(200,200,200);stroke-width:0" />
@@ -328,13 +354,13 @@ void Wlan::sendSVG(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
    */
   client.println("<!DOCTYPE html>");
   client.println("<html><body>");
-  client.print("<svg width=\"480\" height=\"320\" style=\"font-family:Arial;font-size:24px;font-weight:bold\">");
-  client.print("<rect x=\"10\" y=\"10\" width=\"460\" height=\"110\" style=\"fill:rgb(200,200,200);stroke-width:0\" />");
-  client.print("<rect x=\"10\" y=\"130\" width=\"460\" height=\"110\" style=\"fill:rgb(200,200,200);stroke-width:0\" />");
-  client.print("<rect x=\"10\" y=\"250\" width=\"460\" height=\"60\" style=\"fill:rgb(200,200,200);stroke-width:0\" />");
-  client.print("<text x=\"20\" y=\"50\">Keller</text>");
-  client.print("<text x=\"20\" y=\"170\">Hobby</text>");
-  client.print("<text x=\"20\" y=\"290\">Au&szlig;en</text>");
+  client.println("<svg width=\"480\" height=\"320\" style=\"font-family:Arial;font-size:24px;font-weight:bold\">");
+  client.println("<rect x=\"10\" y=\"10\" width=\"460\" height=\"110\" style=\"fill:rgb(200,200,200);stroke-width:0\" />");
+  client.println("<rect x=\"10\" y=\"130\" width=\"460\" height=\"110\" style=\"fill:rgb(200,200,200);stroke-width:0\" />");
+  client.println("<rect x=\"10\" y=\"250\" width=\"460\" height=\"60\" style=\"fill:rgb(200,200,200);stroke-width:0\" />");
+  client.println("<text x=\"20\" y=\"50\">Keller</text>");
+  client.println("<text x=\"20\" y=\"170\">Hobby</text>");
+  client.println("<text x=\"20\" y=\"290\">Au&szlig;en</text>");
   sendSVGKlima(k1, 50);
   sendSVGKlima(k2, 170);
   sendSVGKlima(k3, 290);
@@ -342,6 +368,7 @@ void Wlan::sendSVG(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
   sendSVGRaum(r2, 225);
   client.println("</svg>");
   client.println("</body></html>");
+  delay(10);
 }
 
 
@@ -363,13 +390,13 @@ void Wlan::sendSVGKlima(Klima &k, int y)
   client.print(y);
   client.print("\">");
   client.print(k.abshum, 1);
-  client.print(" g/m&sup3;</text>");
+  client.println(" g/m&sup3;</text>");
 }
 
 
 void Wlan::sendSVGRaum(Raum &r, int y)
 {
-  const static char* modechar[] = { "M", "A", "F", "T", "H", "K" };
+  const static char modechar[] = "MAFTHK";
   client.print("<text x=\"40\" y=\"");
   client.print(y);
   client.print("\">");
@@ -380,5 +407,5 @@ void Wlan::sendSVGRaum(Raum &r, int y)
   client.print(y);
   client.print("\">");
   client.print(r.lastpos);
-  client.print(" %</text>");
+  client.println(" %</text>");
 }
