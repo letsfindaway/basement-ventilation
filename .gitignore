@@ -35,5 +35,5 @@
 *.user
 
 # Other stuff
-/secret
-/basement-ventilation/*.pro
+secret
+*.pro
