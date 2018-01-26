@@ -6,7 +6,7 @@
 #include "logger.h"
 #include <Arduino.h>
 
-// globale Instanz
+// global instance
 Logger Log;
 
 Logger::Logger()
@@ -15,7 +15,7 @@ Logger::Logger()
 
 bool Logger::begin()
 {
-  addr = IPAddress(192, 168, 178, 26);
+  addr = IPAddress(192, 168, 178, 26); // my desktopp computer
   return udp.begin(2391);
 }
 
@@ -25,7 +25,7 @@ size_t Logger::write(uint8_t c)
   line += (char)c;
 
   if (c == '\n') {
-    // Zeilenende, ausgeben!
+    // line end, output line
     if (Serial) {
       Serial.print(line);
     }
@@ -37,7 +37,7 @@ size_t Logger::write(uint8_t c)
       delay(10);
     }
 
-    // Zeile zuruecksetzen
+    // reset line
     line.remove(0);
   }
 
@@ -51,7 +51,7 @@ size_t Logger::write(const uint8_t *buffer, size_t size)
   size_t len = line.length();
 
   if (line[len - 1] == '\n') {
-    // Zeilenende, ausgeben!
+    // line end, output line
     if (Serial) {
       Serial.print(line);
     }
@@ -63,7 +63,7 @@ size_t Logger::write(const uint8_t *buffer, size_t size)
       delay(10);
     }
 
-    // Zeile zuruecksetzen
+    // reset line
     line.remove(0);
   }
 

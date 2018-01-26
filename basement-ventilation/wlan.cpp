@@ -14,7 +14,7 @@
 int status = WL_IDLE_STATUS;     // the WiFi radio's status
 
 unsigned int localPort = 2390;      // local port to listen for UDP packets
-IPAddress timeServer(192, 168, 178, 1); // fritz.box
+IPAddress timeServer(192, 168, 178, 1); // my fritz.box acting as NTP server
 //IPAddress timeServer(85, 10, 240, 253); // time.nist.gov NTP server
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 
@@ -104,7 +104,7 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
       if (client.connected()) {
         Log.println("connected");
       }
-      // Anfrage ist reingekommen! Wir lesen die GET Zeile der Form GET /[yyyymm[dd][.csv]] blabla
+      // Request received. Read the first line in the form of GET /[yyyymm[dd][.csv]] blabla
       char buf[10];
       size_t bytes = client.readBytesUntil('/', buf, 10);
 
@@ -141,7 +141,7 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
           break;
         }
 
-        // analysiere den req String
+        // analyze the req string
         if (req.endsWith(".csv")) {
           req = req.substring(0, req.length() - 4);
         }
@@ -153,7 +153,7 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
           tag = 1;
           phase = RESPOND;
         } else {
-          // schreibe 404 Antwort
+          // write 404 response
           client.println("HTTP/1.1 404 Not Found");
           client.println();
           delay(1);
@@ -186,16 +186,16 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
     break;
 
   case RESPOND:
-    // erzeuge Filename aus dem req String
+    // create file name from req string
     // req = yyyymmdd.csv -> filename = yyyy/yyyymmdd
     req = req.substring(0, 4) + "/" + req;
 
     if (tag == 0) {
-      // wenn nur ein Tag angefordert: gibt es diesen File?
+      // just one day requested: does it exist?
       daten = SD.open(req);
 
       if (!daten) {
-        // schreibe 404 Antwort
+        // write 404 response
         client.println("HTTP/1.1 404 Not Found");
         client.println();
         delay(1);
@@ -205,19 +205,19 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
       }
     }
 
-    // schreibe 200 Antwort
+    // write 200 response
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/csv");
     client.println("Connection: close");  // the connection will be closed after completion of the response
     client.println();
 
-    // schreibe den CSV Header
+    // write CSV header
     client.println("Zeit;T Keller;H Keller;A Keller;T Hobby;H Hobby;A Hobby;T Aussen;H Aussen;A Aussen;Pos Keller;Mode Keller;Pos Hobby;Mode Hobby;Heizung");
     phase = SEND_DATA;
     break;
 
   case RESPONDSVG:
-    // schreibe 200 Antwort
+    // write 200 response
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/html");
     client.println("Connection: close");  // the connection will be closed after completion of the response
@@ -232,19 +232,19 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
   case SEND_DATA:
     if (!daten) {
       if (tag == 0 || tag > 31) {
-        // Monatsabfrage beendet
+        // request for monthly data finished
         client.stop();
         phase = IDLE;
         break;
       }
 
-      // Monatsanfrage und naechster File erforderlich
+      // monthly data, next file required
       String filename = req + (char)((tag / 10) + '0') + (char)((tag % 10) + '0');
       ++tag;
       daten = SD.open(filename);
 
       if (!daten) {
-        // File existiert nicht, versuche den naechsten
+        // file does not exist, try next
         break;
       }
     }
@@ -260,7 +260,7 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
         daten.close();
 
         if (tag == 0) {
-          // nur ein Tag angefordert, beende Verbindung
+          // only one day requested, close connection
           client.stop();
           phase = IDLE;
         }

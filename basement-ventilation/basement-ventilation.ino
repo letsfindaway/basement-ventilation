@@ -12,26 +12,27 @@
 #include "wlan.h"
 #include "logger.h"
 
-#include "Time.h"
+#include "TimeLib.h"
 
+// define the objects used by the sketch
 Klima aussen(AUSSEN, DHT22_AUSSEN);
 Klima keller(KELLER, DHT22_KELLER);
 Klima hobby (HOBBY, DHT22_HOBBY);
 Anzeige anzeige;
 Raum kellerraum(KELLER, keller, aussen);
 Raum hobbyraum(HOBBY, hobby, aussen);
-
 Wlan wlan;
 
+// simple utility to compute free RAM
 extern "C" char *sbrk(int i);
 
-int FreiRam () {
+int FreeStorage () {
   char stack_dummy = 0;
   return &stack_dummy - sbrk(0);
 }
 
 void setup() {
-  // Pins konfigurieren
+  // configure pins before doing anything else
   pinMode(ABGAS,         INPUT_PULLUP);
   pinMode(FENSTER_AUF,   OUTPUT);
   pinMode(FENSTER_ZU,    OUTPUT);
@@ -44,56 +45,55 @@ void setup() {
   digitalWrite(FENSTER_HOBBY, RELAY_OFF);
   digitalWrite(MOTOR_AN,      RELAY_OFF);
 
+  analogReadResolution(10);
+
+  // try to initialize Serial for 5 seconds
   Serial.begin(9600);
   int cnt = 50;
   while (!Serial && cnt--) delay(100);
-  delay(500);
-  Serial.println("Fenstersteuerung");
-  Serial.print("Freier Speicher: ");
-  Serial.println(FreiRam());
 
-  analogReadResolution(10);
+  Serial.println("Basement Ventilation");
+  Serial.print("Free RAM: ");
+  Serial.println(FreeStorage());
 
-  Serial.println(F("Anzeige initialisieren"));
+  Serial.println("Initialize display");
   anzeige.setup();
   anzeige.screen(Anzeige::HOME);
 
-  Serial.println(F("Wlan initialisieren"));
+  Serial.println("Initialize WiFi");
   wlan.connect();
 
-  // Jetzt kann der Logger benutzt werden
+  // now the Logger can be used, we continue with setup of sensors and motors
   Log.begin();
   Log.println("Start UDP Logger");
-  Log.println(F("Sensoren initialisieren"));
+  Log.println("Initialize Sensors");
   Settings::settings.load();
 
   aussen.setup(0, 30);
   keller.setup(10, 30);
   hobby.setup(20, 30);
 
-  Log.print("Freier Speicher: ");
-  Log.println(FreiRam());
+  Serial.print("Free RAM: ");
+  Log.println(FreeStorage());
 
-  Log.println("Motoren kalibrieren");
+  Log.println("Calibrate motors");
   kellerraum.setup();
   hobbyraum.setup();
   Settings::settings.save();
 
-  Log.println("Fenster schliessen");
+  Log.println("Close windows");
   kellerraum.fenster(ZU);
   hobbyraum.fenster(ZU);
-  Log.println("Setup beendet");
 
   wlan.getNtpTime();
+  Log.println("Setup finished");
 }
 
 void loop() {
-  static Ort cfgOrt;
-  Settings& s(Settings::settings);
+  static Ort cfgOrt; // used in configuration mode to remember which room is configured
+  Settings& s(Settings::settings); // just a shortcut
 
-//  delay(10);
-
-  // Sensoren einlesen, Klima nur alle 30 sec oder so
+  // read sensors
   if (aussen.update()) {
     anzeige.printKlima(AUSSEN, aussen);
   }
@@ -106,7 +106,7 @@ void loop() {
     anzeige.printKlima(KELLER, keller);
   }
 
-  // Aktoren ansteuern und laufende Aktionen ueberwachen
+  // control actuators and supervise running actions
   if (kellerraum.update()) {
     anzeige.printModus(KELLER, kellerraum.modus);
   }
@@ -115,6 +115,7 @@ void loop() {
     anzeige.printModus(HOBBY, hobbyraum.modus);
   }
 
+  // actually control motor movement and display position
   Motor::move();
 
   int pos;
@@ -127,10 +128,10 @@ void loop() {
     anzeige.printFenster(HOBBY, pos);
   }
 
-  // Touch auslesen
+  // read touch screen
   Anzeige::Event evt = anzeige.getEvent();
   
-  // Benutzerinteraktion ausfuehren
+  // execute user interaction
   switch (evt) {
   case Anzeige::EVT_NULL:
     break;
@@ -249,7 +250,7 @@ void loop() {
     break;
   }
 
-  // NTP Paket senden/empfangen und auswerten (alle 15 Minuten)
+  // send, receive and evaluate NTP packet
   time_t t = wlan.getNtpTime();
 
   if (t) {
@@ -257,10 +258,14 @@ void loop() {
     Log.print(hour());
     Log.print(":");
     Log.println(minute());
+    Log.print(":");
+    Log.println(second());
     anzeige.startlog();
   }
 
-  // Log-Daten aufzeichnen (alle 5 Minuten)
+  // write log data to CSV file (every 5 minutes)
   anzeige.log(keller, hobby, aussen, kellerraum, hobbyraum);
+
+  // handle web server requests
   wlan.serve(keller, hobby, aussen, kellerraum, hobbyraum);
 }

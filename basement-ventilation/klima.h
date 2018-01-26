@@ -6,13 +6,17 @@
 #ifndef KLIMA_H
 #define KLIMA_H
 
-// Verwaltung und Management eines DHT22 Sensors
 #include "pins.h"
 
 #include <DHT.h>
 #include <DHT_U.h>
 #include <Adafruit_Sensor.h>
 
+/**
+ * @brief The Klima class manages a DHT22 sensor, reads it in configurable
+ * intervals and computes the absolute humidity out of the temperature and
+ * relative humidity readings.
+ */
 class Klima {
   public:
     Klima(Ort ort, int pin);

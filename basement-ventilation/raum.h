@@ -18,6 +18,11 @@ enum Modus {
   TEMPERATUR
 };
 
+/**
+ * @brief The Raum class represents a room with a window operated by a motor.
+ * It references two Klima object, one for the outside climate and one for the
+ * inside climate. Based on this data it decides on the mode and window position.
+ */
 class Raum
 {
 public:

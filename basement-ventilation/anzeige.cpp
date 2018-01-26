@@ -7,7 +7,6 @@
 #include "pins.h"
 #include "logger.h"
 #include "TimeLib.h"
-#include "Timezone.h"
 
 #include <Arduino.h>
 #include <Fonts/FreeSansBold12pt7b.h>
@@ -335,7 +334,7 @@ Anzeige::Event Anzeige::getEvent()
 {
   if (lastevent != EVT_NULL) {
     if (ts.touched()) {
-      // diesen Event nicht wiederholen bis losgelassen, alle Events droppen
+      // do not repeat this event; drop all events until released
       while (ts.bufferSize() > 1) {
         ts.getPoint();
      }
@@ -350,7 +349,7 @@ Anzeige::Event Anzeige::getEvent()
     return EVT_NULL;
   }
 
-  // alle Events ausser dem letzten wegwerfen
+  // drop all events but the last
   while (ts.bufferSize() > 1) {
     ts.getPoint();
   }
@@ -358,17 +357,13 @@ Anzeige::Event Anzeige::getEvent()
   TS_Point p = ts.getPoint();
   int y = map(p.x, TS_MINX, TS_MAXX, 0, tft.height());
   int x = map(p.y, TS_MINY, TS_MAXY, 0, tft.width());
-//  Log.print("TS ");
-//  Log.print(x);
-//  Log.print("/");
-//  Log.println(y);
 
   const Hotspot* hotspots = current == HOME ? hotspot_home : hotspots_config;
 
   for (size_t i = 0; hotspots[i].event != EVT_NULL; ++i) {
     if (within(x, y, hotspots[i])) {
       if ((long)millis() - lasttime < 200) {
-        // gleicher Event innerhalb 200ms: ignorieren
+        // same event within 200ms: ignore
         break;
       }
       
@@ -423,7 +418,7 @@ void Anzeige::log(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
   Log.println(zeile);
   nextminute = (nextminute + 5) % 60;
 
-  // versuche Datei zu oeffnen
+  // try to open file
   File logfile;
   char filename[] = "yyyy/yyyymmdd";
   p = filename;
@@ -432,13 +427,13 @@ void Anzeige::log(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
   p = fmt(p, tm.Month, 2);
   p = fmt(p, tm.Day, 2);
 
-  // lege Verzeichnis an
+  // create directory
   filename[4] = '\0';
   SD.mkdir(filename);
   filename[4] = '/';
 
   if ((logfile = SD.open(filename, FILE_WRITE | O_APPEND)) == 0) {
-    Log.println(F("Kann Datei nicht oeffnen"));
+    Log.println("Kann Datei nicht oeffnen");
     return;
   }
 

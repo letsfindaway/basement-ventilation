@@ -24,10 +24,10 @@ Motor::Motor(Ort ort)
 /**
  * @brief Motor::moveto
  *
- * Bewege Motor zu angegebener Position.
- * Diese Funktion setzt nur zielms und fuehrt sonst keine Veraenderung durch.
- * Die Zuweisung des aktuell zu bewegenden Motors geschieht in update().
- * Die State Machine des Motors wird in move() bearbeitet.
+ * Move motor to given position.
+ * This method only setzs zielms but does not change the state of the object otherwise.
+ * Selection and assignment of motor is performed in update().
+ * The state machine is executed in move().
  *
  * @param pos Position (0 .. 100)
  */
@@ -49,7 +49,7 @@ void Motor::moveto(int pos)
   fullms = Settings::settings.getFullMs(ort);
   long z = fullms * pos / 100;
 
-  // fuer Anschlagpositionen Ziel weit darueber hinaus festlegen
+  // for end position define a target far beyond end so that end switches are safely reached
   if (z == 0) {
     z = ZU_MS;
   } else if (z == fullms) {
@@ -69,34 +69,30 @@ void Motor::moveto(int pos)
 /**
  * @brief Motor::update
  *
- * Bestimmt Richtungswunsch aus aktueller Position und Ziel.
- * Diese Funktion setzt nur richtung und fuehrt sonst keine Veraenderung durch.
- * Die Richtung dient als Event fuer die State Machine, die in move() bearbeitet wird.
+ * Determine direction from actual position and target position.
+ * This method only modifies richtung and does not change the state of the object otherwise.
+ * richung is used as event for the state machine in move().
  *
- * @return true wenn Motor bewegt werden soll
+ * @return true when motor shall be moved
  */
 bool Motor::update()
 {
   if (posms < zielms - 300) {
-    // aufmachen
+    // open
     richtung = AUF;
 
     if (!moving) {
       Log.println("Starte Motor auf");
-//      starttime = millis();
-//      startms = posms;
       moving = this;
     }
 
     return true;
   } else if (posms > zielms + 300) {
-    // zumachen
+    // close
     richtung = ZU;
 
     if (!moving) {
       Log.println("Starte Motor zu");
-//      starttime = millis();
-//      startms = posms;
       moving = this;
     }
 
@@ -107,11 +103,17 @@ bool Motor::update()
   }
 }
 
+/**
+ * @brief Motor::kalibrieren
+ *
+ * Calibrate motor by determining the time it takes to open the window completely.
+ * This information is used to translate a percentage into a operation time.
+ */
 void Motor::kalibrieren()
 {
   /*
-   * Erst ganz zumachen, dann ganz oeffnen und Millisekunden zaehlen
-   * Wenn kein Strom mehr fliesst, dann muss der Anschlag erreicht sein
+   * First close completely, then open completely and count milliseconds
+   * When current drops, then end switch must have been reached
    */
   posms = KALIB_MS;
   zielms = 0;
@@ -152,9 +154,9 @@ int Motor::pos()
 /**
  * @brief Motor::move
  *
- * State Machine fuer Motor
+ * Motor state machine
  *
- * @return
+ * @return true when a motor is moving
  */
 bool Motor::move()
 {
@@ -164,9 +166,9 @@ bool Motor::move()
     if ((moving->status == AUF || moving->status == ZU)
         && millis() - moving->starttime > 500
         && analogRead(MOTOR_STROM) < 30) {
-      // Strom < 100mA -> ist am Anschlag, stoppen
+      // Current < 100mA -> end switch reached, stop
       Log.println("Anschlag erreicht");
-      // Kalibrierung wiederherstellen
+      // restore calibration
       if (moving->fullms != KALIB_MS) {
         moving->posms = moving->status == ZU ? 0 : moving->fullms;
       }

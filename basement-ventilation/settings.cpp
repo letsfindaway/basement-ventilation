@@ -8,6 +8,7 @@
 
 #include <SD.h>
 
+// global instance
 Settings Settings::settings;
 
 Settings::Settings()

@@ -22,48 +22,49 @@ void Raum::setup()
 /**
  * @brief Raum::update
  *
- * Entscheidungen treffen in folgender Reihenfolge:
- * - manuell? Dann keine Aenderung
- * - zu kalt? Dann zumachen
- * - Draussen trockener als innen? Dann aufmachen
- * - Heizung an? Dann halb aufmachen
- * - Draussen feuchter als innen? Dann zumachen
+ * Decisions are made in the following order:
+ * - manual? Then no action
+ * - too cold? Then close window
+ * - outside less humid than inside and temperature high enough? Then open window
+ * - heating on and not too cold? Then open window a little bit
+ * - outside more humid than inside? Then close window
  */
 bool Raum::update()
 {
   Modus m = modus;
 
-  // manuell? Dann keine Aenderung
+  // manual? Then no action
   if (modus == MANUELL) {
     m = MANUELL;
   }
 
-  // zu kalt? Dann zumachen
+  // too cold? Then close window
   else if (innen.temp < Settings::settings.getMinTemp(ort)) {
     m = TEMPERATUR;
     motor.moveto(0);
   }
 
-  // Draussen trockener als innen und nicht zu kalt? Dann aufmachen
+  // outside less humid than inside and temperature high enough? Then open window
   else if (aussen.abshum < innen.abshum - Settings::settings.getMaxDiff(ort)
            && innen.temp >= Settings::settings.getMinTemp(ort) + 0.5) {
     m = FEUCHT;
     motor.moveto(100);
   }
 
-  // Heizung an und nicht zu kalt? Dann halb aufmachen
+  // heating on and not too cold? Then open window a little bit
   else if (ort == HOBBY && digitalRead(ABGAS) == LOW
            && innen.temp >= Settings::settings.getMinTemp(ort) + 0.3) {
     m = HEIZUNG;
     motor.moveto((int)Settings::settings.getHeizWin());
   }
 
-  // Draussen feuchter als innen? Dann zumachen
+  // outside more humid than inside? Then close window
   else if (aussen.abshum > innen.abshum - Settings::settings.getMinDiff(ort)) {
     m = TROCKEN;
     motor.moveto(0);
   }
 
+  // now perform the update on the motor
   motor.update();
 
   if (m != modus) {
@@ -78,6 +79,14 @@ bool Raum::update()
 }
 
 
+/**
+ * @brief Raum::moved
+ *
+ * Check whether motor position changed and return actual position
+ *
+ * @param pos returns the actual position of the window in percent (0..100)
+ * @return true if position changed since last call, false otherwise
+ */
 bool Raum::moved(int &pos)
 {
   pos = motor.pos();
@@ -91,6 +100,13 @@ bool Raum::moved(int &pos)
 }
 
 
+/**
+ * @brief Raum::fenster
+ *
+ * Instruct the window to open, close or stop. Useful for manual operation.
+ *
+ * @param richtung Direction AUF, ZU or STOP
+ */
 void Raum::fenster(Richtung richtung)
 {
   if (modus != MANUELL) {
