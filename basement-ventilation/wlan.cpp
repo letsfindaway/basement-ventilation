@@ -9,6 +9,13 @@
 #include <SPI.h>
 #include <WiFiUdp.h>
 
+/**
+ * Sorry, the following include file is not part of the project.
+ * You have to write it on your own. It should contain sometling like
+ *
+ * char ssid[] = "yourssid";      // your network SSID (name)
+ * char pass[] = "yourpasswd";    // your network password (use for WPA, or use as key for WEP)
+ */
 #include "secret/credentials.h"
 
 int status = WL_IDLE_STATUS;     // the WiFi radio's status
