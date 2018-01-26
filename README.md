@@ -16,7 +16,7 @@ I'm trying to give you enough information to build this project for your house. 
 
 If you have any questions, ideas, improvements or find an error, don't hesitate to create an [issue](/issues). I don't promise to answer, but I will try!
 
-![Overview](overview.jpg)
+![Overview](doc/overview.jpg)
 
 ## Features
 
