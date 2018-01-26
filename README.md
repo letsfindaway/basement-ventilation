@@ -16,9 +16,13 @@ I'm trying to give you enough information to build this project for your house. 
 
 If you have any questions, ideas, improvements or find an error, don't hesitate to create an [issue](/issues). I don't promise to answer, but I will try!
 
+![Overview](overview.jpg)
+
 ## Features
 
-Just opening and closing the windows was not enough for me. The more you think about it, the more features come on the list. Currently the project includes:
+Feature #1 for me was: **This project is cloudless!** Today, not even a coffee machine is working without an online connection anymore. Every cup of coffee is first reported to the manufacturer, before it is delivered to you. This project is different. You do not have to send your data to some outside server. And even if it has WiFi on board: No bit of data ever leaves your house, if you don't want.
+
+And here's the list of what this project **can** do, even offline :) Just opening and closing the windows was not enough for me. The more you think about it, the more features come on the list. Currently the project includes:
 
 * Reading the sensors and computing the absolute humidity inside and outside
 * Controlling the window position exactly: not only fully open and fully closed is possible, but every position in between
@@ -30,7 +34,7 @@ Just opening and closing the windows was not enough for me. The more you think a
 * Providing a simple web interface displaying the same information as the local screen
 * Sending log information to your computer so that you can follow program execution online
 
-That's a lot of stuff for such a simple task, isn't it? And you probably have more ideas.
+That's a lot of stuff for such a simple task, isn't it? And you (and me!) probably have more ideas.
 
 ## BOM (Bill of material)
 
@@ -58,4 +62,5 @@ I will not provide a fool-proof step by step instruction for building that proje
 * [Wet wet wet - What is relative and absolute humidity and when shall I open the windows](doc/humidity.md)
 * [All you need - Installing the necessary libraries](doc/libraries.md)
 * [Touch me - What your spouse, friend, or whoever sees](doc/user.md)
+* [Get on the SPI bus - headaches because of an SD card](doc/spi.md)
 * [Code walk - Explaining architecture and details of the program](doc/code.md)
