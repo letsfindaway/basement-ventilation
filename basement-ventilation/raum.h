@@ -6,17 +6,9 @@
 #ifndef RAUM_H
 #define RAUM_H
 
+#include "enums.h"
 #include "klima.h"
 #include "motor.h"
-
-enum Modus {
-  MANUELL,
-  AUTOMATISCH,
-  FEUCHT,
-  TROCKEN,
-  HEIZUNG,
-  TEMPERATUR
-};
 
 /**
  * @brief The Raum class represents a room with a window operated by a motor.

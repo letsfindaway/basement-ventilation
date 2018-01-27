@@ -6,15 +6,8 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
-#include "pins.h"
+#include "enums.h"
 
-enum Richtung {
-  STOP,
-  AUF,
-  ZU,
-  TRANS_AUF,
-  TRANS_ZU
-};
 
 class Motor
 {

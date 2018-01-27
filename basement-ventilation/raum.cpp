@@ -4,6 +4,7 @@
  */
 
 #include "raum.h"
+#include "customize.h"
 #include "settings.h"
 #include "logger.h"
 

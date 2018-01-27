@@ -4,6 +4,7 @@
  */
 
 #include "motor.h"
+#include "customize.h"
 #include "settings.h"
 #include "logger.h"
 

@@ -6,7 +6,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "pins.h"
+#include "enums.h"
+
 class Settings
 {
 public:

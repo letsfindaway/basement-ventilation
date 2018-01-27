@@ -6,7 +6,7 @@
 #ifndef KLIMA_H
 #define KLIMA_H
 
-#include "pins.h"
+#include "enums.h"
 
 #include <DHT.h>
 #include <DHT_U.h>

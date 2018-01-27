@@ -4,6 +4,7 @@
  */
 
 #include "wlan.h"
+#include "customize.h"
 #include "logger.h"
 
 #include <SPI.h>
@@ -11,7 +12,7 @@
 
 /**
  * Sorry, the following include file is not part of the project.
- * You have to write it on your own. It should contain sometling like
+ * You have to write it on your own. It should contain something like
  *
  * char ssid[] = "yourssid";      // your network SSID (name)
  * char pass[] = "yourpasswd";    // your network password (use for WPA, or use as key for WEP)
@@ -21,8 +22,7 @@
 int status = WL_IDLE_STATUS;     // the WiFi radio's status
 
 unsigned int localPort = 2390;      // local port to listen for UDP packets
-IPAddress timeServer(192, 168, 178, 1); // my fritz.box acting as NTP server
-//IPAddress timeServer(85, 10, 240, 253); // time.nist.gov NTP server
+IPAddress timeServer(BV_NTP_SERVER); // my fritz.box acting as NTP server
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 
 // A UDP instance to let us send and receive packets over UDP

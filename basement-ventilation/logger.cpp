@@ -4,6 +4,7 @@
  */
 
 #include "logger.h"
+#include "customize.h"
 #include <Arduino.h>
 
 // global instance
@@ -15,7 +16,7 @@ Logger::Logger()
 
 bool Logger::begin()
 {
-  addr = IPAddress(192, 168, 178, 26); // my desktopp computer
+  addr = IPAddress(BV_LOG_TARGET); // my desktopp computer
   return udp.begin(2391);
 }
 
@@ -31,7 +32,7 @@ size_t Logger::write(uint8_t c)
     }
 
     if (line.length() > 2) {
-      udp.beginPacket(addr, 4242);
+      udp.beginPacket(addr, BV_LOG_PORT);
       udp.write(line.c_str(), line.length() - 2);
       udp.endPacket();
       delay(10);
@@ -57,7 +58,7 @@ size_t Logger::write(const uint8_t *buffer, size_t size)
     }
 
     if (len > 2) {
-      udp.beginPacket(addr, 4242);
+      udp.beginPacket(addr, BV_LOG_PORT);
       udp.write(line.c_str(), len - 2);
       udp.endPacket();
       delay(10);

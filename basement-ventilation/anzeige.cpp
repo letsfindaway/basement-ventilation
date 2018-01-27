@@ -4,7 +4,7 @@
  */
 
 #include "anzeige.h"
-#include "pins.h"
+#include "customize.h"
 #include "logger.h"
 #include "TimeLib.h"
 
@@ -17,7 +17,11 @@
 #define TS_MINY 190
 #define TS_MAXY 3840
 
-#define HOT 25
+// Radius of a touchscreen hotspot
+#define TS_HOT 25
+
+// Colour of background rectangles
+#define BG_RECT_COLOR 0xbdd7
 
 // These read 16- and 32-bit types from the SD card file.
 // BMP data is stored little-endian, Arduino is little-endian too.
@@ -181,29 +185,29 @@ void Anzeige::screen(Screen scr, Ort ort) {
 
   case CONFIG:
     tft.fillScreen(HX8357_WHITE);
-    tft.fillRect(10, 10, 460, 300, 0xbdd7);
+    tft.fillRect(10, 10, 460, 300, BG_RECT_COLOR);
     tft.setCursor(22, 50);
-    tft.print(ort == KELLER ? "Keller" : "Hobby");
-    tft.drawBitmap(427, 30, bmp_home, 32, 32, HX8357_BLACK, 0xbdd7);
+    tft.print(ort == KELLER ? BV_NAME_ROOM1 : BV_NAME_ROOM2);
+    tft.drawBitmap(427, 30, bmp_home, 32, 32, HX8357_BLACK, BG_RECT_COLOR);
 
     tft.setCursor(22, 100);
-    tft.print("Min. Diff.");
+    tft.print(BV_TEXT_MINDIFF);
     tft.fillTriangle(180,83, 198,83, 189,98, HX8357_BLACK);
     tft.fillTriangle(360,98, 378,98, 369,83, HX8357_BLACK);
 
     tft.setCursor(22, 150);
-    tft.print("Max. Diff.");
+    tft.print(BV_TEXT_MAXDIFF);
     tft.fillTriangle(180,133, 198,133, 189,148, HX8357_BLACK);
     tft.fillTriangle(360,148, 378,148, 369,133, HX8357_BLACK);
 
     tft.setCursor(22, 200);
-    tft.print("Min. Temp.");
+    tft.print(BV_TEXT_MINTEMP);
     tft.fillTriangle(180,183, 198,183, 189,198, HX8357_BLACK);
     tft.fillTriangle(360,198, 378,198, 369,183, HX8357_BLACK);
 
     if (ort == HOBBY) {
       tft.setCursor(22, 250);
-      tft.print("Fenster %");
+      tft.print(BV_TEXT_WINDOWPERCENT);
       tft.fillTriangle(180,233, 198,233, 189,248, HX8357_BLACK);
       tft.fillTriangle(360,248, 378,248, 369,233, HX8357_BLACK);
     }
@@ -220,15 +224,15 @@ void Anzeige::printKlima(Ort ort, Klima& klima) {
     return;
   }
 
-  tft.fillRect(140, 28+120*ort, 60, 21, 0xbdd7);
+  tft.fillRect(140, 28+120*ort, 60, 21, BG_RECT_COLOR);
   tft.setCursor(140, 48+120*ort);
   tft.print(klima.temp, 1);
   
-  tft.fillRect(250, 28+120*ort, 60, 21, 0xbdd7);
+  tft.fillRect(250, 28+120*ort, 60, 21, BG_RECT_COLOR);
   tft.setCursor(250, 48+120*ort);
   tft.print(klima.humidity, 1);
 
-  tft.fillRect(360, 28+120*ort, 60, 21, 0xbdd7);
+  tft.fillRect(360, 28+120*ort, 60, 21, BG_RECT_COLOR);
   tft.setCursor(360, 48+120*ort);
   tft.print(klima.abshum, 1); 
   delay(10);
@@ -253,9 +257,9 @@ void Anzeige::printModus(Ort ort, Modus modus)
   }
 
   if (bmp) {
-    tft.drawBitmap(75-16, 95-16+120*ort, bmp, 32, 32, color, 0xbdd7);
+    tft.drawBitmap(75-16, 95-16+120*ort, bmp, 32, 32, color, BG_RECT_COLOR);
   } else {
-    tft.fillRect(75-16, 95-16+120*ort, 32, 32, 0xbdd7);
+    tft.fillRect(75-16, 95-16+120*ort, 32, 32, BG_RECT_COLOR);
   }
 
   delay(10);
@@ -279,21 +283,21 @@ void Anzeige::printFenster(Ort ort, int pos)
     color = tft.color565(195, 46, 0);
   }
 
-  tft.drawBitmap(185-16, 95-16+120*ort, bmp, 32, 32, color, 0xbdd7);
+  tft.drawBitmap(185-16, 95-16+120*ort, bmp, 32, 32, color, BG_RECT_COLOR);
 
   int off = pos < 10 ? 20 : 0;
 
-  tft.fillRect(270, 83+120*ort, 40, 21, 0xbdd7);
+  tft.fillRect(270, 83+120*ort, 40, 21, BG_RECT_COLOR);
   tft.setCursor(270+off, 103+120*ort);
   tft.print(pos);
   delay(10);
 }
 
 static bool within(int x, int y, const Hotspot& h) {
-  return x > h.x - HOT
-      && x < h.x + HOT
-      && y > h.y - HOT
-      && y < h.y + HOT;
+  return x > h.x - TS_HOT
+      && x < h.x + TS_HOT
+      && y > h.y - TS_HOT
+      && y < h.y + TS_HOT;
 }
 
 void Anzeige::printCfg(float mind, float maxd, float mint, float win)
@@ -303,25 +307,25 @@ void Anzeige::printCfg(float mind, float maxd, float mint, float win)
   }
 
   if (!isnan(mind)) {
-    tft.fillRect(240, 80, 60, 21, 0xbdd7);
+    tft.fillRect(240, 80, 60, 21, BG_RECT_COLOR);
     tft.setCursor(240, 100);
     tft.print(mind, 1);
   }
 
   if (!isnan(maxd)) {
-    tft.fillRect(240, 130, 60, 21, 0xbdd7);
+    tft.fillRect(240, 130, 60, 21, BG_RECT_COLOR);
     tft.setCursor(240, 150);
     tft.print(maxd, 1);
   }
 
   if (!isnan(mint)) {
-    tft.fillRect(240, 180, 60, 21, 0xbdd7);
+    tft.fillRect(240, 180, 60, 21, BG_RECT_COLOR);
     tft.setCursor(240, 200);
     tft.print(mint, 1);
   }
 
   if (!isnan(win)) {
-    tft.fillRect(240, 230, 60, 21, 0xbdd7);
+    tft.fillRect(240, 230, 60, 21, BG_RECT_COLOR);
     tft.setCursor(240, 250);
     tft.print((int)win);
     tft.print("%");
@@ -573,7 +577,7 @@ char* Anzeige::fmt(char *s, float nbr, int digits, bool decimal, bool sign)
   n /= 10;
 
   if (decimal) {
-    *--p = ',';
+    *--p = BV_CSV_DECIMAL;
   }
 
   while (--digits) {

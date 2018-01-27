@@ -6,7 +6,6 @@
 #ifndef ANZEIGE_H
 #define ANZEIGE_H
 
-#include "pins.h"
 #include "klima.h"
 #include "raum.h"
 

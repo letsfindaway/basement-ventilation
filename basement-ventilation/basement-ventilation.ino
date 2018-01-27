@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE file in the project root for full license information.
  */
 
-#include "pins.h"
+#include "customize.h"
 #include "klima.h"
 #include "anzeige.h"
 #include "raum.h"

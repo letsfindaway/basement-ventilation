@@ -6,7 +6,6 @@
 #ifndef WLAN_H
 #define WLAN_H
 
-//#define LIMITED_RAM_DEVICE
 #include "klima.h"
 #include "raum.h"
 
