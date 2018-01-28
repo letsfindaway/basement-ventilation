@@ -39,7 +39,7 @@ Wlan::Wlan()
 
 bool Wlan::connect()
 {
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
   WiFi.setPins(8,7,4,2);
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not present");
@@ -67,7 +67,7 @@ bool Wlan::connect()
   Udp.begin(localPort);
   Serial.println("Starte Server");
   server.begin();
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
   return ok;
 }
 
@@ -77,7 +77,7 @@ time_t Wlan::getNtpTime()
   if (lastRequest == 0 || millis() - lastRequest > 15 * 60000) {
     lastRequest = millis();
     sendNTPpacket(timeServer);
-    delay(10);
+    delay(SPI_HOLDOFF_TIMEMS);
   }
 
   int size = Udp.parsePacket();
@@ -92,7 +92,7 @@ time_t Wlan::getNtpTime()
     secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
     secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
     secsSince1900 |= (unsigned long)packetBuffer[43];
-    delay(10);
+    delay(SPI_HOLDOFF_TIMEMS);
     return secsSince1900 - 2208988800UL;
   }
 
@@ -284,7 +284,7 @@ void Wlan::serve(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2) {
     break;
   }
 
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 
@@ -320,7 +320,7 @@ void Wlan::sendNTPpacket(IPAddress& address)
   Log.print("Sende NTP Paket ");
   Log.println(Udp.endPacket());
   //Serial.println("6");
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 
@@ -375,7 +375,7 @@ void Wlan::sendSVG(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
   sendSVGRaum(r2, 225);
   client.println("</svg>");
   client.println("</body></html>");
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 

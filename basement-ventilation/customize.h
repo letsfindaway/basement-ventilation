@@ -56,4 +56,8 @@
 #define BV_LOG_TARGET 192,168,178,26
 #define BV_LOG_PORT   4242
 
+// SPI bus holdoff time (see doc/spi.md)
+
+#define SPI_HOLDOFF_TIMEMS 10
+
 #endif

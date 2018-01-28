@@ -35,7 +35,7 @@ size_t Logger::write(uint8_t c)
       udp.beginPacket(addr, BV_LOG_PORT);
       udp.write(line.c_str(), line.length() - 2);
       udp.endPacket();
-      delay(10);
+      delay(SPI_HOLDOFF_TIMEMS);
     }
 
     // reset line
@@ -61,7 +61,7 @@ size_t Logger::write(const uint8_t *buffer, size_t size)
       udp.beginPacket(addr, BV_LOG_PORT);
       udp.write(line.c_str(), len - 2);
       udp.endPacket();
-      delay(10);
+      delay(SPI_HOLDOFF_TIMEMS);
     }
 
     // reset line

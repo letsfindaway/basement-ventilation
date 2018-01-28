@@ -216,7 +216,7 @@ void Anzeige::screen(Screen scr, Ort ort) {
   }
 
   current = scr;
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 void Anzeige::printKlima(Ort ort, Klima& klima) {
@@ -235,7 +235,7 @@ void Anzeige::printKlima(Ort ort, Klima& klima) {
   tft.fillRect(360, 28+120*ort, 60, 21, BG_RECT_COLOR);
   tft.setCursor(360, 48+120*ort);
   tft.print(klima.abshum, 1); 
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 void Anzeige::printModus(Ort ort, Modus modus)
@@ -262,7 +262,7 @@ void Anzeige::printModus(Ort ort, Modus modus)
     tft.fillRect(75-16, 95-16+120*ort, 32, 32, BG_RECT_COLOR);
   }
 
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 
@@ -290,7 +290,7 @@ void Anzeige::printFenster(Ort ort, int pos)
   tft.fillRect(270, 83+120*ort, 40, 21, BG_RECT_COLOR);
   tft.setCursor(270+off, 103+120*ort);
   tft.print(pos);
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 static bool within(int x, int y, const Hotspot& h) {
@@ -331,7 +331,7 @@ void Anzeige::printCfg(float mind, float maxd, float mint, float win)
     tft.print("%");
   }
 
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 Anzeige::Event Anzeige::getEvent()
@@ -443,7 +443,7 @@ void Anzeige::log(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
 
   logfile.println(zeile);
   logfile.close();
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
 }
 
 
@@ -563,7 +563,7 @@ void Anzeige::bmpDraw(const char *filename, uint8_t x, uint16_t y) {
   }
 
   bmpFile.close();
-  delay(10);
+  delay(SPI_HOLDOFF_TIMEMS);
   if(!goodBmp) Serial.println(F("BMP format not recognized."));
 }
 
