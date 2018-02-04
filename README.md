@@ -36,6 +36,25 @@ And here's the list of what this project **can** do, even offline :) Just openin
 
 That's a lot of stuff for such a simple task, isn't it? And you (and me!) probably have more ideas.
 
+## Why choose my project?
+
+My project is definitely not the only possibility to keep your basement dry. Why chose my project? Here are some roughly comparable projects!
+
+1. [Humidity controlled cellar ventilation](https://www.raspberrypi.org/forums/viewtopic.php?t=152917)
+2. [Dew point ventilation controller](http://danifold.net/fancontrol.html)
+3. [ArDewpoint Dew Point Based Ventilation Controller](http://www.instructables.com/id/ArDewpoint-Dew-Point-Based-Ventilation-Controller/)
+4. [Automation of ventilation system](https://create.arduino.cc/projecthub/team-iminds-iot/automation-of-ventilation-system-1913a5)
+
+Number 2 on the list is a very perfectionist implementation of an automatic ventilation system! If I had seen the window motors used in this project before, I might have used them - even if they cost three to four times as much as my actuators. But besides that, what my project differentiates from all of the above is the following:
+
+* I'm not using a fan for ventilation, but only open and close the windows. Until now I can see that this is completely sufficient, even if the windows are below surface. Adding a fan would mean that I would have to drill some hole to the outside, which I definitely wanted to avoid. Only project 2 has also the option to operate the windows.
+* My project can control two rooms independently. One is our food store, and I want to keep it quite cold there. The other is my workshop, and also the heating and the washing machine are located there. Here I want it definitely warmer. I keep the doors to these two rooms closed, so that the cold air from the food store stays there and does not cool down the complete house. None of the project is controlling two rooms independently.
+* Project 4 is working with the SmartLiving.io Internet of Things platform. I know, all that stuff is cool, but do I really need this? The other projects - and of course also mine - can also work offline.
+* I'm trying to keep things simple - and still smart. Icinga based monitoring using Nagios plugins (see project 1) might be a cool feature for somebody close to a system administrator, but might be too complicated for the average hobbyist. 
+* I wanted to have simple local operation using a touch screen. Project 1 has this also, the others don't.
+
+So you see, besides some similarities, there are still differences - and that's what caused me to start my own project.
+
 ## BOM (Bill of material)
 
 For that project I used the following parts:
