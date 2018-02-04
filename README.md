@@ -47,11 +47,11 @@ My project is definitely not the only possibility to keep your basement dry. Why
 
 Number 2 on the list is a very perfectionist implementation of an automatic ventilation system! If I had seen the window motors used in this project before, I might have used them - even if they cost three to four times as much as my actuators. But besides that, what my project differentiates from all of the above is the following:
 
-* I'm not using a fan for ventilation, but only open and close the windows. Until now I can see that this is completely sufficient, even if the windows are below surface. Adding a fan would mean that I would have to drill some hole to the outside, which I definitely wanted to avoid. Only project 2 has also the option to operate the windows.
-* My project can control two rooms independently. One is our food store, and I want to keep it quite cold there. The other is my workshop, and also the heating and the washing machine are located there. Here I want it definitely warmer. I keep the doors to these two rooms closed, so that the cold air from the food store stays there and does not cool down the complete house. None of the project is controlling two rooms independently.
-* Project 4 is working with the SmartLiving.io Internet of Things platform. I know, all that stuff is cool, but do I really need this? The other projects - and of course also mine - can also work offline.
-* I'm trying to keep things simple - and still smart. Icinga based monitoring using Nagios plugins (see project 1) might be a cool feature for somebody close to a system administrator, but might be too complicated for the average hobbyist. 
-* I wanted to have simple local operation using a touch screen. Project 1 has this also, the others don't.
+* I'm **not using a fan** for ventilation, but only open and close the windows. Until now I can see that this is completely sufficient, even if the windows are below surface. Adding a fan would mean that I would have to drill some hole to the outside, which I definitely wanted to avoid. Only project 2 has also the option to operate the windows.
+* My project can control **two rooms independently**. One is our food store, and I want to keep it quite cold there. The other is my workshop, and also the heating and the washing machine are located there. Here I want it definitely warmer. I keep the doors to these two rooms closed, so that the cold air from the food store stays there and does not cool down the complete house. None of the project is controlling two rooms independently.
+* Project 4 is working with the SmartLiving.io Internet of Things platform. I know, all that stuff is cool, but do I really need this? The other projects - and of course also mine - can also **work offline**.
+* I'm trying to **keep things simple** - and still smart. Icinga based monitoring using Nagios plugins (see project 1) might be a cool feature for somebody close to a system administrator, but might be too complicated for the average hobbyist. 
+* I wanted to have simple **local operation using a touch screen**. Project 1 has this also, the others don't.
 
 So you see, besides some similarities, there are still differences - and that's what caused me to start my own project.
 
