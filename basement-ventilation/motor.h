@@ -18,6 +18,7 @@ public:
   bool update();
   void kalibrieren();
   int pos();
+  bool blocked(bool keep = true);
   static bool move();
   static const char* toString(Richtung r);
 

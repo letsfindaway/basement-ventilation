@@ -147,27 +147,35 @@ void loop() {
     break;
 
   case Anzeige::EVT_AUF_KELLER:
-    kellerraum.modus = MANUELL;
-    anzeige.printModus(KELLER, kellerraum.modus);
-    kellerraum.fenster(AUF);
+    if (kellerraum.modus != ALARM) {
+      kellerraum.modus = MANUELL;
+      anzeige.printModus(KELLER, kellerraum.modus);
+      kellerraum.fenster(AUF);
+    }
     break;
 
   case Anzeige::EVT_AUF_HOBBY:
-    hobbyraum.modus = MANUELL;
-    anzeige.printModus(HOBBY, hobbyraum.modus);
-    hobbyraum.fenster(AUF);
+    if (hobbyraum.modus != ALARM) {
+      hobbyraum.modus = MANUELL;
+      anzeige.printModus(HOBBY, hobbyraum.modus);
+      hobbyraum.fenster(AUF);
+    }
     break;
 
   case Anzeige::EVT_ZU_KELLER:
-    kellerraum.modus = MANUELL;
-    anzeige.printModus(KELLER, kellerraum.modus);
-    kellerraum.fenster(ZU);
+    if (kellerraum.modus != ALARM) {
+      kellerraum.modus = MANUELL;
+      anzeige.printModus(KELLER, kellerraum.modus);
+      kellerraum.fenster(ZU);
+    }
     break;
 
   case Anzeige::EVT_ZU_HOBBY:
-    hobbyraum.modus = MANUELL;
-    anzeige.printModus(HOBBY, hobbyraum.modus);
-    hobbyraum.fenster(ZU);
+    if (hobbyraum.modus != ALARM) {
+      hobbyraum.modus = MANUELL;
+      anzeige.printModus(HOBBY, hobbyraum.modus);
+      hobbyraum.fenster(ZU);
+    }
     break;
 
   case Anzeige::EVT_STOP_KELLER:

@@ -34,8 +34,13 @@ bool Raum::update()
 {
   Modus m = modus;
 
+  // blocked? Then alarm
+  if (modus == ALARM || motor.blocked()) {
+    m = ALARM;
+  }
+
   // manual? Then no action
-  if (modus == MANUELL) {
+  else if (modus == MANUELL) {
     m = MANUELL;
   }
 
@@ -110,6 +115,12 @@ bool Raum::moved(int &pos)
  */
 void Raum::fenster(Richtung richtung)
 {
+  if (modus == ALARM) {
+    // remove alarm on manual action
+    modus = MANUELL;
+    motor.blocked(false);
+  }
+
   if (modus != MANUELL) {
     return;
   }
@@ -141,7 +152,8 @@ const char *Raum::toString(Modus modus)
     "FEUCHT",
     "TROCKEN",
     "HEIZUNG",
-    "TEMPERATUR"
+    "TEMPERATUR",
+    "ALARM"
   };
 
   return mtext[modus];
