@@ -152,6 +152,18 @@ int Motor::pos()
   return map(posms, 0, fullms, 0, 100);
 }
 
+bool Motor::blocked(bool keep)
+{
+  bool block = status == BLOCK;
+
+  if (block && !keep) {
+    status = STOP;
+    Log.println("Unblocked, status=STOP");
+  }
+
+  return block;
+}
+
 /**
  * @brief Motor::move
  *
@@ -164,13 +176,22 @@ bool Motor::move()
   static int cnt = 0;
 
   if (moving) {
+    int curr = -1;
+
     if ((moving->status == AUF || moving->status == ZU)
         && millis() - moving->starttime > 500
-        && analogRead(MOTOR_STROM) < 30) {
-      // Current < 100mA -> end switch reached, stop
+        && ((curr = analogRead(MOTOR_STROM)) < BV_CURRENT_LOW) || curr > BV_CURRENT_HIGH) {
+      // Current < 100mA, > 600mA -> end switch reached or blocked, stop
       Log.println("Anschlag erreicht");
-      // restore calibration
-      if (moving->fullms != KALIB_MS) {
+
+
+      // overcurrent, set emergency mode and inhibit further movement
+      if (curr > BV_CURRENT_HIGH) {
+        Log.print("Overcurrent, blocked! ");
+        Log.println(curr);
+        moving->status = BLOCK;
+      } else if (moving->fullms != KALIB_MS) {
+        // restore calibration
         moving->posms = moving->status == ZU ? 0 : moving->fullms;
       }
 
@@ -180,7 +201,7 @@ bool Motor::move()
 
     if (++cnt % 100 == 0) {
       Log.print("Analogwert ");
-      Log.println(analogRead(MOTOR_STROM));
+      Log.println(curr);
     }
 
     switch (moving->status) {
@@ -286,6 +307,11 @@ bool Motor::move()
         moving->starttime = millis();
       }
       break;
+
+    case BLOCK:
+      digitalWrite(MOTOR_AN, RELAY_OFF);
+      moving = nullptr;
+      break;
     }
   } else {
     digitalWrite(FENSTER_HOBBY, RELAY_OFF);
@@ -308,7 +334,8 @@ const char *Motor::toString(Richtung r)
     "AUF",
     "ZU",
     "TRANS_AUF",
-    "TRANS_ZU"
+    "TRANS_ZU",
+    "BLOCK"
   };
 
   return rtext[r];

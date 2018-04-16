@@ -403,7 +403,7 @@ void Wlan::sendSVGKlima(Klima &k, int y)
 
 void Wlan::sendSVGRaum(Raum &r, int y)
 {
-  const static char modechar[] = "MAFTHK";
+  const static char modechar[] = "MAFTHK!";
   client.print("<text x=\"40\" y=\"");
   client.print(y);
   client.print("\">");

@@ -27,6 +27,11 @@
 #define TFT_DC   10
 #define SD_CS    5
 
+// Current limit values
+
+#define BV_CURRENT_LOW   20
+#define BV_CURRENT_HIGH 200
+
 // Name of rooms and labels
 
 #define BV_NAME_ROOM1         "Keller"
@@ -43,7 +48,8 @@
 // T = trocken (dry)
 // H = Heizung (heating)
 // K = kalt (cold)
-#define BV_SVG_MODECHARS      "MAFTHK"
+// ! = Alarm
+#define BV_SVG_MODECHARS      "MAFTHK!"
 
 // Decimal separator for CSV
 

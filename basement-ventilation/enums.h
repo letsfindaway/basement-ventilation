@@ -13,7 +13,8 @@ enum Modus {
   FEUCHT,
   TROCKEN,
   HEIZUNG,
-  TEMPERATUR
+  TEMPERATUR,
+  ALARM
 };
 
 enum Richtung {
@@ -21,7 +22,8 @@ enum Richtung {
   AUF,
   ZU,
   TRANS_AUF,
-  TRANS_ZU
+  TRANS_ZU,
+  BLOCK
 };
 
 #endif // ENUMS_H
