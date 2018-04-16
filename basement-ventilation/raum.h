@@ -23,6 +23,7 @@ public:
   bool update();
   bool moved(int& pos);
   void fenster(Richtung richtung);
+  void setModus(Modus m);
   static const char* toString(Modus modus);
 
 public:

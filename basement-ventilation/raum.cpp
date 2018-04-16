@@ -115,12 +115,6 @@ bool Raum::moved(int &pos)
  */
 void Raum::fenster(Richtung richtung)
 {
-  if (modus == ALARM) {
-    // remove alarm on manual action
-    modus = MANUELL;
-    motor.blocked(false);
-  }
-
   if (modus != MANUELL) {
     return;
   }
@@ -143,8 +137,30 @@ void Raum::fenster(Richtung richtung)
   }
 }
 
+void Raum::setModus(Modus m)
+{
+  switch (m) {
+  case MANUELL:
+    if (modus == ALARM) {
+      // remove alarm on manual action
+      Log.println("Alarm status cleared");
+      motor.blocked(false);
+    }
 
-const char *Raum::toString(Modus modus)
+    modus = MANUELL;
+    break;
+
+  case AUTOMATISCH:
+    modus = AUTOMATISCH;
+    break;
+
+  default:
+    break;
+  }
+}
+
+
+const char* Raum::toString(Modus modus)
 {
   static const char* mtext[] = {
     "MANUELL",

@@ -158,6 +158,7 @@ bool Motor::blocked(bool keep)
 
   if (block && !keep) {
     status = STOP;
+    Log.println("Unblocked, status=STOP");
   }
 
   return block;
@@ -183,23 +184,24 @@ bool Motor::move()
       // Current < 100mA, > 600mA -> end switch reached or blocked, stop
       Log.println("Anschlag erreicht");
 
-      // restore calibration
-      if (moving->fullms != KALIB_MS) {
+
+      // overcurrent, set emergency mode and inhibit further movement
+      if (curr > BV_CURRENT_HIGH) {
+        Log.print("Overcurrent, blocked! ");
+        Log.println(curr);
+        moving->status = BLOCK;
+      } else if (moving->fullms != KALIB_MS) {
+        // restore calibration
         moving->posms = moving->status == ZU ? 0 : moving->fullms;
       }
 
       moving->zielms = moving->posms;
       moving->richtung = STOP;
-
-      // overcurrent, set emergency mode and inhibit further movement
-      if (curr > BV_CURRENT_HIGH) {
-        moving->status = BLOCK;
-      }
     }
 
     if (++cnt % 100 == 0) {
       Log.print("Analogwert ");
-      Log.println(analogRead(MOTOR_STROM));
+      Log.println(curr);
     }
 
     switch (moving->status) {
@@ -307,6 +309,7 @@ bool Motor::move()
       break;
 
     case BLOCK:
+      digitalWrite(MOTOR_AN, RELAY_OFF);
       moving = nullptr;
       break;
     }

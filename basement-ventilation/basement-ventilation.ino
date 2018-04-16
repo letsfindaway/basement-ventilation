@@ -137,18 +137,20 @@ void loop() {
     break;
 
   case Anzeige::EVT_MODUS_KELLER:
-    kellerraum.modus = kellerraum.modus == MANUELL ? AUTOMATISCH : MANUELL;
+    kellerraum.fenster(STOP);
+    kellerraum.setModus(kellerraum.modus == MANUELL ? AUTOMATISCH : MANUELL);
     anzeige.printModus(KELLER, kellerraum.modus);
     break;
 
   case Anzeige::EVT_MODUS_HOBBY:
-    hobbyraum.modus = hobbyraum.modus == MANUELL ? AUTOMATISCH : MANUELL;
+    hobbyraum.fenster(STOP);
+    hobbyraum.setModus(hobbyraum.modus == MANUELL ? AUTOMATISCH : MANUELL);
     anzeige.printModus(HOBBY, hobbyraum.modus);
     break;
 
   case Anzeige::EVT_AUF_KELLER:
     if (kellerraum.modus != ALARM) {
-      kellerraum.modus = MANUELL;
+      kellerraum.setModus(MANUELL);
       anzeige.printModus(KELLER, kellerraum.modus);
       kellerraum.fenster(AUF);
     }
@@ -156,7 +158,7 @@ void loop() {
 
   case Anzeige::EVT_AUF_HOBBY:
     if (hobbyraum.modus != ALARM) {
-      hobbyraum.modus = MANUELL;
+      hobbyraum.setModus(MANUELL);
       anzeige.printModus(HOBBY, hobbyraum.modus);
       hobbyraum.fenster(AUF);
     }
@@ -164,7 +166,7 @@ void loop() {
 
   case Anzeige::EVT_ZU_KELLER:
     if (kellerraum.modus != ALARM) {
-      kellerraum.modus = MANUELL;
+      kellerraum.setModus(MANUELL);
       anzeige.printModus(KELLER, kellerraum.modus);
       kellerraum.fenster(ZU);
     }
@@ -172,7 +174,7 @@ void loop() {
 
   case Anzeige::EVT_ZU_HOBBY:
     if (hobbyraum.modus != ALARM) {
-      hobbyraum.modus = MANUELL;
+      hobbyraum.setModus(MANUELL);
       anzeige.printModus(HOBBY, hobbyraum.modus);
       hobbyraum.fenster(ZU);
     }
