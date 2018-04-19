@@ -14,7 +14,7 @@ The rest is some software.
 
 I'm trying to give you enough information to build this project for your house. You might modify it to cope with more or less rooms or add your own features.
 
-If you have any questions, ideas, improvements or find an error, don't hesitate to create an [issue](/issues). I don't promise to answer, but I will try!
+If you have any questions, ideas, improvements or find an error, don't hesitate to create an [issue](../../issues). I don't promise to answer, but I will try!
 
 ![Overview](doc/overview.jpg)
 
@@ -70,7 +70,7 @@ For that project I used the following parts:
 * some electronic parts (resistors, capacitors) mentioned in the text
 * cable, housing, etc as you need and like
 
-It finally cost me about 200 € and gave me a lot of fun -- and dry air in the basement rooms!
+It finally cost me about 200 â‚¬ and gave me a lot of fun -- and dry air in the basement rooms!
 
 ## Step by step
 
