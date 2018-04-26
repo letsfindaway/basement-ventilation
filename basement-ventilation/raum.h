@@ -24,6 +24,7 @@ public:
   bool moved(int& pos);
   void fenster(Richtung richtung);
   void setModus(Modus m);
+  void interrupt();
   static const char* toString(Modus modus);
 
 public:

@@ -19,6 +19,7 @@ public:
   void kalibrieren();
   int pos();
   bool blocked(bool keep = true);
+  void interrupt();
   static bool move();
   static const char* toString(Richtung r);
 
@@ -31,6 +32,7 @@ private:
   int lastpos;
   long zielms;
   long posms;
+  long pospulse;
   long startms;
   unsigned long starttime;
   long fullms; // Millisekunden fuer Position 100, ganz offen

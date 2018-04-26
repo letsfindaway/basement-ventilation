@@ -31,21 +31,35 @@ int FreeStorage () {
   return &stack_dummy - sbrk(0);
 }
 
+void int_reed_keller() {
+  kellerraum.interrupt();
+}
+
+void int_reed_hobby() {
+  hobbyraum.interrupt();
+}
+
 void setup() {
   // configure pins before doing anything else
-  pinMode(ABGAS,         INPUT_PULLUP);
-  pinMode(FENSTER_AUF,   OUTPUT);
-  pinMode(FENSTER_ZU,    OUTPUT);
-  pinMode(FENSTER_HOBBY, OUTPUT);
-  pinMode(MOTOR_AN,      OUTPUT);
-  pinMode(MOTOR_STROM,   INPUT);
-  
+  pinMode(ABGAS,           INPUT_PULLUP);
+  pinMode(FENSTER_AUF,     OUTPUT);
+  pinMode(FENSTER_ZU,      OUTPUT);
+  pinMode(FENSTER_HOBBY,   OUTPUT);
+  pinMode(MOTOR_AN,        OUTPUT);
+  pinMode(MOTOR_STROM,     INPUT);
+  pinMode(INT_REED_KELLER, INPUT_PULLUP);
+  pinMode(INT_REED_HOBBY,  INPUT_PULLUP);
+
   digitalWrite(FENSTER_AUF,   RELAY_OFF);
   digitalWrite(FENSTER_ZU,    RELAY_OFF);
   digitalWrite(FENSTER_HOBBY, RELAY_OFF);
   digitalWrite(MOTOR_AN,      RELAY_OFF);
 
   analogReadResolution(10);
+
+  // attach interrupts from reed sensors
+  attachInterrupt(digitalPinToInterrupt(INT_REED_KELLER), int_reed_keller, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(INT_REED_HOBBY),  int_reed_hobby,  CHANGE);
 
   // try to initialize Serial for 5 seconds
   Serial.begin(9600);
@@ -55,6 +69,10 @@ void setup() {
   Serial.println("Basement Ventilation");
   Serial.print("Free RAM: ");
   Serial.println(FreeStorage());
+  Log.print("digitalPinToInterrupt(0)=");
+  Log.println(digitalPinToInterrupt(1));
+  Log.print("digitalPinToInterrupt(1)=");
+  Log.println(digitalPinToInterrupt(0));
 
   Serial.println("Initialize display");
   anzeige.setup();

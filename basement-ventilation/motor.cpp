@@ -20,6 +20,7 @@ Motor::Motor(Ort ort)
   lastpos = -1;
   fullms = 20000;
   posms = fullms;
+  pospulse = 0;
 }
 
 /**
@@ -125,6 +126,7 @@ void Motor::kalibrieren()
   } while (move());
 
   posms = 0;
+  pospulse = 0;
   fullms = KALIB_MS;
   zielms = KALIB_MS;
 
@@ -164,6 +166,37 @@ bool Motor::blocked(bool keep)
   return block;
 }
 
+void Motor::interrupt()
+{
+  // as only one motor is running at any time this variable can be shared across instances
+  static unsigned long us = 0;
+
+  unsigned long now = micros();
+  unsigned long delta = now - us;
+
+  if (delta < BV_REED_DEBOUNCE_US) {
+    // too short, debounce and ignore
+    return;
+  }
+  
+  us = now;
+  
+  switch (status) {
+  case AUF:
+  case TRANS_AUF:
+    ++pospulse;
+    break;
+
+  case ZU:
+  case TRANS_ZU:
+    --pospulse;
+    break;
+
+  default:
+    break;
+  }
+}
+
 /**
  * @brief Motor::move
  *
@@ -182,7 +215,8 @@ bool Motor::move()
         && millis() - moving->starttime > 500
         && ((curr = analogRead(MOTOR_STROM)) < BV_CURRENT_LOW) || curr > BV_CURRENT_HIGH) {
       // Current < 100mA, > 600mA -> end switch reached or blocked, stop
-      Log.println("Anschlag erreicht");
+      Log.print("Anschlag erreicht, pulse=");
+      Log.println(moving->pospulse);
 
 
       // overcurrent, set emergency mode and inhibit further movement
@@ -200,8 +234,10 @@ bool Motor::move()
     }
 
     if (++cnt % 100 == 0) {
-      Log.print("Analogwert ");
-      Log.println(curr);
+      Log.print("Analogwert=");
+      Log.print(curr);
+      Log.print(" pulse=");
+      Log.println(moving->pospulse);
     }
 
     switch (moving->status) {

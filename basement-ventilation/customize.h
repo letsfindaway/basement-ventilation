@@ -12,12 +12,14 @@
 #define DHT22_KELLER 12
 #define DHT22_HOBBY  19
 
-#define MOTOR_AN      13
-#define ABGAS         14
-#define FENSTER_AUF   15
-#define FENSTER_ZU    16
-#define FENSTER_HOBBY 17
-#define MOTOR_STROM   18
+#define MOTOR_AN       13
+#define ABGAS          14
+#define FENSTER_AUF    15
+#define FENSTER_ZU     16
+#define FENSTER_HOBBY  17
+#define MOTOR_STROM    18
+#define INT_REED_KELLER 0
+#define INT_REED_HOBBY  1
 
 #define RELAY_ON  LOW
 #define RELAY_OFF HIGH
@@ -31,6 +33,10 @@
 
 #define BV_CURRENT_LOW   20
 #define BV_CURRENT_HIGH 200
+
+// Reed contact debounce (microseconds)
+
+#define BV_REED_DEBOUNCE_US 4000
 
 // Name of rooms and labels
 

@@ -159,6 +159,11 @@ void Raum::setModus(Modus m)
   }
 }
 
+void Raum::interrupt()
+{
+  motor.interrupt();
+}
+
 
 const char* Raum::toString(Modus modus)
 {
