@@ -51,6 +51,8 @@ float Settings::getToffset(Ort ort)
   case HOBBY:  return hobbyToffset;
   case AUSSEN: return aussenToffset;
   }
+
+  return 0;
 }
 
 
@@ -61,6 +63,8 @@ float Settings::getTfaktor(Ort ort)
   case HOBBY:  return hobbyTfaktor;
   case AUSSEN: return aussenTfaktor;
   }
+
+  return 0;
 }
 
 float Settings::getHoffset(Ort ort)
@@ -70,6 +74,8 @@ float Settings::getHoffset(Ort ort)
   case HOBBY:  return hobbyHoffset;
   case AUSSEN: return aussenHoffset;
   }
+
+  return 0;
 }
 
 float Settings::getHfaktor(Ort ort)
@@ -79,6 +85,8 @@ float Settings::getHfaktor(Ort ort)
   case HOBBY:  return hobbyHfaktor;
   case AUSSEN: return aussenHfaktor;
   }
+
+  return 0;
 }
 
 int Settings::getFullMs(Ort ort)
@@ -88,6 +96,8 @@ int Settings::getFullMs(Ort ort)
   case HOBBY:  return hobbyFullMs;
   case AUSSEN: return 0;
   }
+
+  return 0;
 }
 
 float Settings::getMinDiff(Ort ort)
@@ -97,6 +107,8 @@ float Settings::getMinDiff(Ort ort)
   case HOBBY:  return hobbyMinDiff;
   case AUSSEN: return 0;
   }
+
+  return 0;
 }
 
 float Settings::getMaxDiff(Ort ort)
@@ -106,6 +118,8 @@ float Settings::getMaxDiff(Ort ort)
   case HOBBY:  return hobbyMaxDiff;
   case AUSSEN: return 0;
   }
+
+  return 0;
 }
 
 float Settings::getMinTemp(Ort ort)
@@ -115,6 +129,8 @@ float Settings::getMinTemp(Ort ort)
   case HOBBY:  return hobbyMinTemp;
   case AUSSEN: return 0;
   }
+
+  return 0;
 }
 
 float Settings::getHeizWin()

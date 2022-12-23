@@ -26,7 +26,7 @@ Motor::Motor(Ort ort)
  * @brief Motor::moveto
  *
  * Move motor to given position.
- * This method only setzs zielms but does not change the state of the object otherwise.
+ * This method only sets zielms but does not change the state of the object otherwise.
  * Selection and assignment of motor is performed in update().
  * The state machine is executed in move().
  *
@@ -44,7 +44,7 @@ void Motor::moveto(int pos)
   Log.print(ort);
   Log.print(" moveto(");
   Log.print(pos);
-  Log.print(") Altes Ziel=");
+  Log.print(") Previous target=");
   Log.print(zielms);
 
   fullms = Settings::settings.getFullMs(ort);
@@ -58,7 +58,7 @@ void Motor::moveto(int pos)
   }
 
   if (z != zielms) {
-    Log.print(" Neues Ziel=");
+    Log.print(" New target=");
     Log.print(z);
     zielms = z;
   }
@@ -82,8 +82,8 @@ bool Motor::update()
     // open
     richtung = AUF;
 
-    if (!moving) {
-      Log.println("Starte Motor auf");
+    if (!moving && status != BLOCK) {
+      Log.println("Start motor OPEN");
       moving = this;
     }
 
@@ -92,8 +92,8 @@ bool Motor::update()
     // close
     richtung = ZU;
 
-    if (!moving) {
-      Log.println("Starte Motor zu");
+    if (!moving && status != BLOCK) {
+      Log.println("Start motor CLOSE");
       moving = this;
     }
 
@@ -118,6 +118,7 @@ void Motor::kalibrieren()
    */
   posms = KALIB_MS;
   zielms = 0;
+  starttime = millis();
 
   do {
     update();
@@ -176,21 +177,38 @@ bool Motor::move()
   static int cnt = 0;
 
   if (moving) {
-    int curr = -1;
+    /*
+     * Current supervision for AirWin
+     *
+     * The motor may have a high initial current during some few milliseconds.
+     *   - ignore high current for BV_MOTOR_STARTUP_TIME
+     * The motor may have low current for some ramp up time
+     *  - ignore low current for BV_MOTOR_RAMP_TIME
+     * Current increases when window is fully open or closed
+     *  - use high current as indicator for end position
+     * Current drops when internal obstacle detection is activated
+     *  - use low current as indicator for end position
+     */
+    int curr = analogRead(MOTOR_STROM);
+    unsigned long time = millis() - moving->starttime;
+    bool motorOn = moving->status == AUF || moving->status == ZU;
+    bool lowCurrent = time > BV_MOTOR_RAMP_TIME && curr < BV_CURRENT_LOW;
+    bool highCurrent = time > BV_MOTOR_STARTUP_TIME && curr > BV_CURRENT_HIGH;
 
-    if ((moving->status == AUF || moving->status == ZU)
-        && millis() - moving->starttime > 500
-        && ((curr = analogRead(MOTOR_STROM)) < BV_CURRENT_LOW) || curr > BV_CURRENT_HIGH) {
-      // Current < 100mA, > 600mA -> end switch reached or blocked, stop
-      Log.println("Anschlag erreicht");
-
+    if (motorOn && (lowCurrent || highCurrent)) {
+      Log.print("Limit reached, current=");
+      Log.print(BV_MILLIAMP(curr));
+      Log.println(" mA");
 
       // overcurrent, set emergency mode and inhibit further movement
-      if (curr > BV_CURRENT_HIGH) {
+      // Emergency mode not needed with AirWin actuators
+      /* if (curr > BV_CURRENT_HIGH) {
         Log.print("Overcurrent, blocked! ");
-        Log.println(curr);
+        Log.println(BV_MILLIAMP(curr));
         moving->status = BLOCK;
-      } else if (moving->fullms != KALIB_MS) {
+      } else */ 
+      
+      if (moving->fullms != KALIB_MS) {
         // restore calibration
         moving->posms = moving->status == ZU ? 0 : moving->fullms;
       }
@@ -198,10 +216,11 @@ bool Motor::move()
       moving->zielms = moving->posms;
       moving->richtung = STOP;
     }
-
-    if (++cnt % 100 == 0) {
-      Log.print("Analogwert ");
-      Log.println(curr);
+    
+    if (++cnt % 10 == 0) {
+      Log.print("Motorstrom ");
+      Log.print(BV_MILLIAMP(curr));
+      Log.println(" mA");
     }
 
     switch (moving->status) {
@@ -212,14 +231,15 @@ bool Motor::move()
       digitalWrite(MOTOR_AN, RELAY_OFF);
 
       if (moving->richtung == AUF) {
-        Log.println("Motor Status TRANS_AUF");
+        Log.println("Motor status TRANS_AUF");
         moving->status = TRANS_AUF;
         moving->starttime = millis();
       } else if (moving->richtung == ZU) {
-        Log.println("Motor Status TRANS_ZU");
+        Log.println("Motor status TRANS_ZU");
         moving->status = TRANS_ZU;
         moving->starttime = millis();
       } else {
+        Log.println("Motor STOP");
         moving = nullptr;
       }
       break;
@@ -232,20 +252,20 @@ bool Motor::move()
 
       if (moving->richtung == AUF) {
         if (millis() - moving->starttime > 500) {
-          Log.println("Motor Status AUF");
+          Log.println("Motor status AUF");
           moving->status = AUF;
           moving->startms = moving->posms;
           moving->starttime = millis();
         }
       } else if (moving->richtung == ZU) {
         if (millis() - moving->starttime > 500) {
-          Log.println("Motor Status TRANS_ZU");
+          Log.println("Motor status TRANS_ZU");
           moving->status = TRANS_ZU;
           moving->starttime = millis();
         }
       } else {
         if (millis() - moving->starttime > 500) {
-          Log.println("Motor Status STOP");
+          Log.println("Motor status STOP");
           moving->status = STOP;
         }
       }
@@ -260,7 +280,7 @@ bool Motor::move()
       if (moving->richtung == AUF) {
         moving->posms = moving->startms + (millis() - moving->starttime);
       } else {
-        Log.println("Motor Status TRANS_AUF");
+        Log.println("Motor status TRANS_AUF");
         moving->status = TRANS_AUF;
         moving->starttime = millis();
       }
@@ -274,13 +294,13 @@ bool Motor::move()
 
       if (moving->richtung == AUF) {
         if (millis() - moving->starttime > 500) {
-          Log.println("Motor Status TRANS_AUF");
+          Log.println("Motor status TRANS_AUF");
           moving->status = TRANS_AUF;
           moving->starttime = millis();
         }
       } else if (moving->richtung == ZU) {
         if (millis() - moving->starttime > 500) {
-          Log.println("Motor Status ZU");
+          Log.println("Motor status ZU");
           moving->status = ZU;
           moving->startms = moving->posms;
           moving->starttime = millis();
@@ -302,7 +322,7 @@ bool Motor::move()
       if (moving->richtung == ZU) {
         moving->posms = moving->startms - (millis() - moving->starttime);
       } else {
-        Log.println("Motor Status TRANS_ZU");
+        Log.println("Motor status TRANS_ZU");
         moving->status = TRANS_ZU;
         moving->starttime = millis();
       }
@@ -310,6 +330,7 @@ bool Motor::move()
 
     case BLOCK:
       digitalWrite(MOTOR_AN, RELAY_OFF);
+      Log.println("Stop motor, blocked");
       moving = nullptr;
       break;
     }

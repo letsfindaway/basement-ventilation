@@ -27,10 +27,14 @@
 #define TFT_DC   10
 #define SD_CS    5
 
-// Current limit values
+// Current limit values (1 Ohm, ARef=3,3V, 10 bits)
 
-#define BV_CURRENT_LOW   20
-#define BV_CURRENT_HIGH 200
+#define BV_CURRENT(mA)        int((mA)*1024/3300)
+#define BV_MILLIAMP(dac)      int((dac)*3300/1024)
+#define BV_CURRENT_LOW        BV_CURRENT(30)
+#define BV_CURRENT_HIGH       BV_CURRENT(500)
+#define BV_MOTOR_STARTUP_TIME 200
+#define BV_MOTOR_RAMP_TIME    2000
 
 // Name of rooms and labels
 
@@ -59,7 +63,7 @@
 // use commas for IP addresses, as they are used as parameter for IPAddress
 
 #define BV_NTP_SERVER 192,168,178,1
-#define BV_LOG_TARGET 192,168,178,26
+#define BV_LOG_TARGET 192,168,178,20
 #define BV_LOG_PORT   4242
 
 // SPI bus holdoff time (see doc/spi.md)

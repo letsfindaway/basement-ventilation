@@ -449,7 +449,8 @@ void Anzeige::log(Klima &k1, Klima &k2, Klima &k3, Raum &r1, Raum &r2)
   filename[4] = '/';
 
   if ((logfile = SD.open(filename, FILE_WRITE | O_APPEND)) == 0) {
-    Log.println("Kann Datei nicht oeffnen");
+    Log.print("Cannot open file ");
+    Log.println(filename);
     return;
   }
 

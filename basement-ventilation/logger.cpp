@@ -70,7 +70,7 @@ void Logger::writeLine()
   // try up to three times to send UDP packet
   for (int i = 0; i < 3; ++i) {
     if (udp.beginPacket(addr, BV_LOG_PORT)) {
-      udp.write(line.c_str(), line.length() - 2);
+      udp.write(line.c_str(), line.length());
 
       if (udp.endPacket()) {
         // everything was successful
