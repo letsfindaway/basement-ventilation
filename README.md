@@ -50,7 +50,7 @@ Number 2 on the list is a very perfectionist implementation of an automatic vent
 * I'm **not using a fan** for ventilation, but only open and close the windows. Until now I can see that this is completely sufficient, even if the windows are below surface. Adding a fan would mean that I would have to drill some hole to the outside, which I definitely wanted to avoid. Only project 2 has also the option to operate the windows.
 * My project can control **two rooms independently**. One is our food store, and I want to keep it quite cold there. The other is my workshop, and also the heating and the washing machine are located there. Here I want it definitely warmer. I keep the doors to these two rooms closed, so that the cold air from the food store stays there and does not cool down the complete house. None of the project is controlling two rooms independently.
 * Project 4 is working with the SmartLiving.io Internet of Things platform. I know, all that stuff is cool, but do I really need this? The other projects - and of course also mine - can also **work offline**.
-* I'm trying to **keep things simple** - and still smart. Icinga based monitoring using Nagios plugins (see project 1) might be a cool feature for somebody close to a system administrator, but might be too complicated for the average hobbyist. 
+* I'm trying to **keep things simple** - and still smart. Icinga based monitoring using Nagios plugins (see project 1) might be a cool feature for somebody close to a system administrator, but might be too complicated for the average hobbyist.
 * I wanted to have simple **local operation using a touch screen**. Project 1 has this also, the others don't.
 
 So you see, besides some similarities, there are still differences - and that's what caused me to start my own project.
@@ -63,14 +63,18 @@ For that project I used the following parts:
 * [Adafruit TFT FeatherWing - 3.5" 480x320 Touchscreen for Feathers](https://www.adafruit.com/product/3651)
 * [5V 4 Channel Relay Shield](https://www.exp-tech.de/module/relais/4262/5v-4-channel-relay-shield?c=1048)
 * [DHT22 temperature-humidity sensor](https://www.exp-tech.de/sensoren/temperatur/5604/dht22-temperature-humidity-sensor-extras)
-* [DARL 3610 actuator](http://www.summit-media.de/shop/Aktuatoren-Positioner/Aktuator-Superjack-DARL-3610.html)
+* ~~[DARL 3610 actuator](http://www.summit-media.de/shop/Aktuatoren-Positioner/Aktuator-Superjack-DARL-3610.html)~~
+* [Comunello AIRWIN A45 rack drive](https://narwa.de/product_info.php?products_id=1060)
 * [Mounting brackets](https://www.amazon.de/MagiDeal-St%C3%BCck-Hochleistungs-Montageb%C3%BCgel-Halterung-Linearantrieb/dp/B072F7M92G)
-* [36V power supply for actuators](https://www.voelkner.de/products/902705/Mean-Well-AC-DC-Netzteilbaustein-geschlossen-LRS-75-36-36-V-DC-2.1-A-75.6-W.html)
+* ~~[36V power supply for actuators](https://www.voelkner.de/products/902705/Mean-Well-AC-DC-Netzteilbaustein-geschlossen-LRS-75-36-36-V-DC-2.1-A-75.6-W.html)~~
+* [24V power supply for actuators](https://www.voelkner.de/products/902704/Mean-Well-LRS-75-24-AC-DC-Netzteilbaustein-geschlossen-3.2A-76.8W-24-V-DC-1St..html)
 * a simple USB power supply for the Adafruit parts
 * some electronic parts (resistors, capacitors) mentioned in the text
 * cable, housing, etc as you need and like
 
 It finally cost me about 200 € and gave me a lot of fun -- and dry air in the basement rooms!
+
+**Edit:** After several failures I replaced the cheap DARL actuators by a better product: The Comunello AIRWIN A45 rack drive. It is more expensive, but now I think it is worth the investment. These drives need a 24V supply, so I also changed the power supply.
 
 ## Step by step
 

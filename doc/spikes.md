@@ -1,22 +1,24 @@
 # Spikes that hurt - How to dejam the DC motors
 
-Then everything was in place: the actuators were mounted at the windows, the sensors distributed in the rooms and outside, an initial version of the software was ready. But after operating the actuators for some seconds, the Feather was suddenly reset and restarted the program.
+**Edit:** As a very positive side effect of switching to Comunello AIRWIN actuators this problem just disappeared. The actuators are properly de-jammed and don't cause any trouble. Also the stability of the whole setup improved remarkably.
 
-My first thought was that interference caused by the motors would occur here. And I was right about that. The actuators have no interference suppression. The manufacturer has probably saved this money in order to achieve the favourable price. Fortunately, there is enough space in the junction box. 
+~~Then everything was in place: the actuators were mounted at the windows, the sensors distributed in the rooms and outside, an initial version of the software was ready. But after operating the actuators for some seconds, the Feather was suddenly reset and restarted the program.~~
 
-Typically you can do two things to cope with interferences:
+~~My first thought was that interference caused by the motors would occur here. And I was right about that. The actuators have no interference suppression. The manufacturer has probably saved this money in order to achieve the favourable price. Fortunately, there is enough space in the junction box. ~~
 
-* You can try to suppress them where they originate
-* You can try to filter them where they affect your circuit
+~~Typically you can do two things to cope with interferences:~~
 
-Whenever possible, the first approach is better because it attacks the causes. Additionally, filters at the inputs are also helpful. I connected a capacitor with 100nF and a resistor with 10Ohm in series and connected it directly to the motor terminals. One end was soldered to the lower limit switch and the other was inserted into the upper terminal. The series resistor limits the inrush current when switching the motor on.
+* ~~You can try to suppress them where they originate~~
+* ~~You can try to filter them where they affect your circuit~~
 
-(insert an image here)
+~~Whenever possible, the first approach is better because it attacks the causes. Additionally, filters at the inputs are also helpful. I connected a capacitor with 100nF and a resistor with 10Ohm in series and connected it directly to the motor terminals. One end was soldered to the lower limit switch and the other was inserted into the upper terminal. The series resistor limits the inrush current when switching the motor on.~~
 
-Additionally I added more 100nF capacitors at the following places:
+~~(insert an image here)~~
 
-* between the terminals of the 36V power supply
-* between the terminals of the 5V power supply
-* between the +5V and GND pins of the sensors
+~~Additionally I added more 100nF capacitors at the following places:~~
 
-Not sure whether this is really necessary, but just to be on the safe side...
+* ~~between the terminals of the 36V power supply~~
+* ~~between the terminals of the 5V power supply~~
+* ~~between the +5V and GND pins of the sensors~~
+
+~~Not sure whether this is really necessary, but just to be on the safe side...~~
